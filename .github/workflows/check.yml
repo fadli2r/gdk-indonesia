@@ -1,0 +1,31 @@
+name: Homepage build
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+      - run: npm run typecheck
+      - name: Production smoke
+        run: |
+          npm start > /tmp/gdk-home.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/ > /tmp/gdk-home.html; then break; fi
+            sleep 1
+          done
+          grep -q 'GDK Indonesia' /tmp/gdk-home.html
+          for asset in gdk-logo.png gdk-orbit.webp hospitality.webp og.png; do
+            curl --fail --silent "http://127.0.0.1:3000/$asset" -o /dev/null
+          done
