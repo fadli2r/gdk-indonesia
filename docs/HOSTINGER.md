@@ -1,33 +1,53 @@
-# Impor homepage ke Hostinger
+# Deploy GDK Indonesia ke Hostinger
 
-## Penyebab pesan package.json tidak ditemukan
+## Pengaturan aplikasi
 
-Saat diperiksa, branch `main` repository hanya memuat `README.md`. Source halaman dan aset belum masuk, jadi meneruskan impor sebagai website statis juga belum akan menghasilkan homepage yang lengkap.
+1. Pilih repository `fadli2r/gdk-indonesia`, branch `main`, root `/`.
+2. Framework **Next.js**, Node.js **24.x**, package manager **npm**.
+3. Install `npm ci` (atau `npm ci --include=dev` jika panel menghilangkan development dependencies).
+4. Build **`npm run build`**, output **`.next`**. Build menggunakan webpack untuk kompatibilitas Hostinger.
+5. Start **`npm start`** jika panel meminta. Hostinger menyediakan `PORT`.
+6. Deploy commit terbaru. Jika impor lama masih menampilkan package.json tidak ditemukan, pilih ulang repository dan branch.
 
-Perbaikan memulihkan source, aset dan package manifest pada root serta mengganti runtime build khusus Sites/Cloudflare dengan Next.js standar untuk Node.js. Source asli yang diarsipkan tidak ditimpa.
+Jangan upload folder `.next` sebagai HTML statis ke `public_html`. Source ini dijalankan sebagai aplikasi Node.js. Tidak membutuhkan database atau kredensial GDK Team.
 
-## Langkah di panel
+## Kontak resmi — isi sebelum menerima pelanggan
 
-1. Kembali ke pemilihan repository lalu refresh / pilih ulang `fadli2r/gdk-indonesia`.
-2. Pilih branch `main`, root `/` (bukan `app` atau `public`).
-3. Pilih framework **Next.js**, Node.js **24.x**, package manager **npm**.
-4. Build command **`npm run build`**, output directory **`.next`**. Jika diminta install command gunakan `npm ci`; bila development dependencies dihilangkan oleh konfigurasi panel, gunakan `npm ci --include=dev`.
-5. Jika ada pengaturan start command, gunakan **`npm start`**. Jangan gunakan Wrangler atau `next start` dari source lama.
-6. Jalankan deploy dan periksa log: instalasi selesai, build selesai, aplikasi aktif. Buka preview Hostinger dan cek bahwa isi homepage GDK tampil, bukan halaman placeholder.
+Tambahkan variabel berikut pada environment aplikasi **sebelum build/deploy**. Nilainya masuk ke halaman publik. Jangan masukkan password, token, atau rahasia ke variabel `NEXT_PUBLIC_*`.
 
-Jika pesan package.json masih muncul, pastikan panel telah membaca commit terbaru dan akses GitHub Hostinger diberikan ke repository yang benar. Hindari impor `gdk-team` untuk homepage.
+| Variabel | Nilai |
+|---|---|
+| `NEXT_PUBLIC_GDK_WHATSAPP` | Nomor WhatsApp bisnis resmi, kode negara `62` tanpa nol awal; hanya digit. Spasi, tanda kurung, `+`, dan `-` akan dinormalisasi. |
+| `NEXT_PUBLIC_GDK_EMAIL` | Alamat email bisnis yang memang menerima pesan pelanggan. |
+| `NEXT_PUBLIC_GDK_ADDRESS` | Alamat studio/kantor yang boleh ditampilkan publik. Opsional. |
 
-## Domain
+Nomor dan email sengaja tidak diisi dengan contoh. Jika kosong/tidak valid, kanal tersebut tidak ditampilkan. Jika keduanya kosong, halaman menjelaskan kanal konsultasi sedang disiapkan dan hanya menawarkan salin/unduh brief serta tautan Tapulas dan Dreamslink. Website tidak mengklaim pesan berhasil dikirim.
 
-Target homepage pada metadata adalah `https://generasidigitalkreatif.id`. Jika domain yang benar berbeda, ubah kedua nilai URL di `app/layout.tsx` sebelum deploy final. Hubungkan domain melalui petunjuk hPanel. DNS dikelola di Domainesia: gunakan tujuan A/CNAME yang ditampilkan Hostinger, jangan menebak alamat.
+Setelah mengubah variabel `NEXT_PUBLIC_*`, lakukan **build/deploy ulang**, bukan hanya restart. Next.js menyisipkan nilai ini pada waktu build. Environment produksi harus sama saat build dan runtime.
 
-Pertahankan record email MX/SPF/DKIM/DMARC dan subdomain `team` saat menghubungkan homepage. Pekerjaan perbaikan repository ini tidak mengubah DNS, email, atau konfigurasi Hostinger.
+Alur pelanggan: pilih brand → isi nama, kebutuhan, waktu/lokasi opsional → Siapkan brief → tinjau/edit → Lanjut ke WhatsApp atau Buka email. Pengiriman final dilakukan pelanggan di aplikasi tersebut. Website tidak menyimpan isian, tidak mengirim otomatis, dan tidak terhubung ke database `gdk-team`.
 
-## Konten sebelum peluncuran
+## Pemeriksaan setelah deploy
 
-Versi lama masih menampilkan beberapa lini berstatus pengembangan, kontak demo, dan galeri konsep. Tinjau `app/site-data.ts` dan teks status di `app/page.tsx` sesuai bisnis yang benar-benar berjalan. Form draft tidak mengirim pesan. Jangan menganggap kontak demo sebagai kanal pelanggan yang aktif.
+- Homepage menampilkan empat layanan aktif: Famous Studio, Tapulas, Dreamslink, Smart TV.
+- Kartu layanan membuka detail; memilih konsultasi mengisi pilihan layanan pada form.
+- Tab solusi, FAQ, menu mobile, tombol animasi, salin dan unduh brief berfungsi.
+- Jika kontak telah diisi, tombol WhatsApp/email mengarah ke kanal yang benar. Tinjau pesan tanpa perlu mengirim uji ke pelanggan.
+- Periksa di ponsel; tidak ada scroll horizontal atau kontrol terpotong.
+- Kunjungi website Tapulas dan Dreamslink untuk memastikan tujuan brand siap digunakan.
+- Tautan Portal tim menuju `https://team.generasidigitalkreatif.id`; aktifkan deployment `gdk-team` secara terpisah.
 
-## Referensi
+## Domain dan email
+
+Target homepage: `https://generasidigitalkreatif.id`. Gunakan record A/CNAME yang ditampilkan Hostinger. DNS domain ada di Domainesia. Pertahankan MX/SPF/DKIM/DMARC serta subdomain `team`. Perubahan repository ini tidak mengubah DNS atau melakukan deployment di hosting.
+
+## Data bisnis
+
+`app/site-data.ts` menyimpan layanan, status, FAQ, dan konfigurasi kontak. Famous Studio, Tapulas, Dreamslink, Smart TV adalah lini aktif. Originfamous dan SW+ ditampilkan untuk konsultasi proyek/acara; MenataMomen berstatus pengembangan. Konco AI, Digital Account Store, dan penyewaan iPhone ditempatkan sebagai inisiatif yang belum diumumkan siap dipesan.
+
+Portofolio/testimoni klien tidak dibuat-buat. Tambahkan hanya materi asli yang diizinkan untuk publikasi. Harga tidak dipatok karena mengikuti penawaran. Ketentuan revisi, pembatalan, penyerahan hasil, dan durasi maintenance harus mengikuti kesepakatan masing-masing layanan.
+
+## Referensi platform
 
 - https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/
 - https://www.hostinger.com/support/how-to-fix-next-js-16-turbopack-build-errors-on-hostinger/

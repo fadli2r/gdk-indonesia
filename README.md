@@ -1,29 +1,34 @@
-# GDK Indonesia — homepage
+# GDK Indonesia
 
-Website profil CV Generasi Digital Kreatif Indonesia untuk `generasidigitalkreatif.id`. Source homepage sebelumnya dipulihkan lengkap, termasuk logo, ilustrasi, komponen interaktif dan metadata. Runtime telah disesuaikan menjadi **Next.js pada Node.js**, sehingga dapat diimpor melalui GitHub ke Hostinger Cloud.
+Homepage CV Generasi Digital Kreatif Indonesia untuk **generasidigitalkreatif.id**. Next.js pada Node.js, siap diimpor ke Hostinger Cloud dari repository ini. Portal karyawan terpisah di repository `gdk-team` untuk `team.generasidigitalkreatif.id`.
 
-Repository ini berbeda dari `gdk-team`, yang digunakan untuk portal karyawan di `team.generasidigitalkreatif.id`.
+## Isi homepage
 
-## Hostinger
+- Empat layanan aktif: **Famous Studio, Tapulas, Dreamslink, Smart TV**.
+- Ekosistem bisnis/teknologi: Originfamous, Tapulas, Smart TV.
+- Ekosistem acara **Social & Wedding+**: Famous Studio, Dreamslink, MenataMomen. SW+ juga melayani konsultasi EO/WO.
+- MenataMomen diberi status pengembangan; inisiatif lama ditampilkan terpisah.
+- Detail layanan, pilihan solusi lintas brand, cara memesan, FAQ.
+- Form brief dengan pemilihan layanan, pratinjau pesan, salin/unduh, dan WhatsApp/email jika kontak resmi dikonfigurasi.
+- Tampilan responsif hitam–kuning, navigasi keyboard, dialog, menu mobile, pengaturan animasi dan dukungan reduced motion.
 
-Pilih **Node.js Web App / Next.js**, kemudian repository `fadli2r/gdk-indonesia`, branch `main`.
+Tidak ada harga, testimoni, klien, nomor telepon, atau alamat rekaan. Galeri konsep lama dihapus dari alur utama; portofolio asli dapat ditambahkan setelah tersedia izin publikasi.
+
+## Deploy Hostinger
 
 | Pengaturan | Nilai |
 |---|---|
-| Root directory | `/` (root repository) |
-| Framework | Next.js |
-| Node.js | 24.x |
-| Package manager | npm |
-| Install command, jika diminta | `npm ci` |
-| Build command | `npm run build` |
-| Output directory | `.next` |
-| Start command, jika diminta | `npm start` |
+| Repository / branch | `fadli2r/gdk-indonesia` / `main` |
+| Root | `/` |
+| Framework / Node | Next.js / 24.x |
+| Install | `npm ci` |
+| Build | `npm run build` |
+| Output | `.next` |
+| Start jika diminta | `npm start` |
 
-`package.json` dan `package-lock.json` berada di root. Build memakai webpack (`next build --webpack`) sesuai kompatibilitas Next.js 16.3.3+ pada Hostinger. Jangan pilih "lanjutkan sebagai website statis" untuk source ini. Server Node melayani hasil build; folder `.next` bukan folder HTML yang diunggah langsung ke `public_html`.
+**Isi kontak resmi sebelum build:** `NEXT_PUBLIC_GDK_WHATSAPP`, `NEXT_PUBLIC_GDK_EMAIL`, dan opsional `NEXT_PUBLIC_GDK_ADDRESS`. Jika kontak kosong, website tetap berjalan tetapi hanya menyiapkan brief, tanpa kanal pengiriman langsung ke GDK. Build ulang setelah mengubah variabel publik.
 
-Tidak membutuhkan database, password bootstrap CEO, atau konfigurasi dari repository `gdk-team`. Hostinger menyediakan `PORT`; start script menghormatinya. Untuk build yang mengatur `NODE_ENV=production` sejak tahap instalasi, pastikan development dependencies ikut terpasang (`npm ci --include=dev`), karena TypeScript dan Tailwind diperlukan saat build.
-
-Panduan: [docs/HOSTINGER.md](docs/HOSTINGER.md).
+Panduan lengkap: [docs/HOSTINGER.md](docs/HOSTINGER.md).
 
 ## Pengembangan
 
@@ -32,25 +37,24 @@ npm ci
 npm run dev
 ```
 
-Produksi:
-
 ```sh
 npm run build
+npm run typecheck
 npm start
 ```
 
-Validasi TypeScript: `npm run typecheck`. Pemeriksaan otomatis GitHub memeriksa build, typecheck dan respons halaman produksi beserta asetnya.
+GitHub Actions menjalankan instalasi bersih, build produksi, TypeScript, dan smoke HTTP/aset. Build memakai `next build --webpack` untuk kompatibilitas Hostinger. `scripts/dev.mjs` menerima argumen host/port preview tanpa mengubah perintah produksi.
 
-## Mengubah konten
+## Sumber konten
 
 | File | Isi |
 |---|---|
-| `app/site-data.ts` | Lini bisnis, skenario, galeri konsep, kontak |
-| `app/page.tsx` | Halaman, modal, tab, carousel dan formulir draft |
-| `app/globals.css` | Tampilan dan responsivitas |
-| `app/layout.tsx` | Metadata domain, judul, Open Graph |
-| `public/` | Logo dan aset gambar asli |
+| `app/site-data.ts` | Brand, layanan, FAQ, skenario, kontak publik |
+| `app/page.tsx` | Halaman dan interaksi |
+| `app/globals.css` | Identitas visual dan responsivitas |
+| `app/layout.tsx` | Metadata dan domain |
+| `public/` | Aset asli GDK |
 
-**Konten masih versi homepage sebelumnya:** semua lini berlabel In Development, kontak masih demo, dan galeri adalah konsep, bukan klaim proyek klien. Form kontak hanya menyiapkan draft pesan, tidak mengirim email atau WhatsApp. Pembaruan daftar lini bisnis, status aktif dan kontak nyata perlu dilakukan sebelum website dipakai untuk menerima pelanggan. Perbaikan ini memulihkan source dan kompatibilitas hosting; tidak mengubah penawaran bisnis tanpa data final.
+Form diproses lokal dalam browser, tidak menyimpan data server, dan tidak mengirim pesan otomatis. WhatsApp/email dibuka hanya setelah pelanggan memilih tindakan tersebut. Tidak ada autentikasi, pembayaran, atau database internal pada homepage.
 
-Source tidak lagi memerlukan Vinext, Wrangler, Cloudflare Workers, kredensial Sites, atau pnpm. Jangan menyalin folder `.openai`, `.sites-runtime`, `node_modules`, `.next`, atau file `.env` dari environment pengembangan ke GitHub.
+Jangan commit `.env`, `.next`, `node_modules`, `.openai`, atau kredensial. Source tidak memerlukan Vinext, Wrangler, Cloudflare Workers, atau pnpm.
